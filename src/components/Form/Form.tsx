@@ -155,35 +155,6 @@ export const Form: FC<Props> = ({ setParams, onCalculate }) => {
           </div>
 
           <div className="field">
-            <label className="label">Min_soc</label>
-            <div className="control">
-              <input 
-                className="input"
-                type="number"
-                name="minSoc"
-                min={0}
-                max={100}
-                step={1}
-                placeholder="Min_soc" 
-              />
-            </div>
-          </div>
-
-          <div className="field">
-            <label className="label">Max_soc</label>
-            <div className="control">
-              <input 
-                className="input"
-                type="number"
-                name="maxSoc"
-                min={0}
-                max={100}
-                step={1}
-                placeholder="Max_soc" />
-            </div>
-          </div>
-
-          <div className="field">
             <div className="control">
               <label className="checkbox">
                 <input 

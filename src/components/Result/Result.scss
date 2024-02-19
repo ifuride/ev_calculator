@@ -1,0 +1,51 @@
+@import "../../styles/utils/extends";
+@import "../../styles/utils/mixins";
+
+.result {
+  &__title {
+    @extend %h1;
+
+    margin-bottom: 24px;
+    text-align: center;
+
+    @include onDesktop {
+      text-align: left;
+    }
+
+    @include onTablet {
+      text-align: left;
+    }
+  }
+
+  &__description {
+    @extend %body-text;
+
+    margin-bottom: 24px;
+  }
+
+  &__view {
+    width: 100%;
+    padding: 20px;
+
+    @include onDesktop {
+      width: 50%;
+    }
+  }
+
+  &__content {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  &__name {
+    @extend %h3;
+
+    margin-bottom: 24px;
+  }
+
+  &__value {
+    @extend %h1;
+
+    margin-bottom: 24px;
+  }
+}

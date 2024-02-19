@@ -1,0 +1,11 @@
+@import '../../styles/utils/variables';
+@import '../../styles/utils/extends';
+
+.footer {
+  height: $footer-height;
+  padding-bottom: 3rem;
+
+  &__text {
+    @extend %body-text;
+  }
+}

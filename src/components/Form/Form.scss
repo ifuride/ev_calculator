@@ -1,0 +1,38 @@
+@import "../../styles/utils/extends";
+@import "../../styles/utils/mixins";
+
+.form {
+  // &__container {
+  //   padding-top: 24px;
+
+
+  // }
+
+  &__title {
+    @extend %h1;
+    margin-bottom: 24px;
+    text-align: center;
+
+    @include onDesktop {
+      text-align: left;
+    }
+
+    @include onTablet {
+      text-align: left;
+    }
+  }
+
+  &__description {
+    @extend %body-text;
+
+    margin-bottom: 24px;
+  }
+
+  &__content {
+    width: 100%;
+
+    @include onDesktop {
+      width: 50%;
+    }
+  }
+}

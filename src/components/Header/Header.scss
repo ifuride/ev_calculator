@@ -1,0 +1,23 @@
+@import "../../styles/utils/variables";
+@import "../../styles/utils/extends";
+@import "../../styles/utils/mixins";
+@import "../../styles/block/logo.scss";
+
+.header {
+	display: flex;
+	align-items: center;
+  justify-content: center;
+  height: $header-height;
+
+  box-shadow: 0 1px 0 $elements-color;
+
+  @include onDesktop {
+    justify-content: flex-start;
+    padding: 0 60px;
+  }
+
+  @include onTablet {
+    justify-content: flex-start;
+    padding: 0 60px;
+  }
+}

@@ -30,7 +30,7 @@ export const Form: FC<Props> = ({ setParams, onCalculate }) => {
           onSubmit={handleSubmit}
         >
           <div className="field">
-            <label className="label">Battery size</label>
+            <label className="label">Battery size(kWh)</label>
             <div className="control">
               <input 
                 className="input"
@@ -43,7 +43,7 @@ export const Form: FC<Props> = ({ setParams, onCalculate }) => {
           </div>
 
           <div className="field">
-            <label className="label">Daily consumption</label>
+            <label className="label">Daily consumption(percentage)</label>
             <div className="control">
               <input 
                 className="input"
@@ -58,7 +58,7 @@ export const Form: FC<Props> = ({ setParams, onCalculate }) => {
           </div>
 
           <div className="field">
-            <label className="label">Charging speed</label>
+            <label className="label">Charging speed(kW)</label>
             <div className="control">
               <input 
                 className="input"
@@ -83,6 +83,7 @@ export const Form: FC<Props> = ({ setParams, onCalculate }) => {
               />
             </div>
           </div>
+
 
           <div className="field">
             <label className="label">Availability start</label>

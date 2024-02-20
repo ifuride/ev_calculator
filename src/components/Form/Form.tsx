@@ -1,43 +1,50 @@
-import React, { FC } from 'react';
-import './Form.scss';
+import React, { FC, useRef } from "react";
+import "./Form.scss";
 
 type Props = {
-  setParams: (newParams: string) => void,
-  onCalculate: () => void,
-}
+  onCalculate: (formState: Record<string, string>) => void;
+};
 
-export const Form: FC<Props> = ({ setParams, onCalculate }) => {
+export const Form: FC<Props> = ({ onCalculate }) => {
+  const formRef = useRef(null);
+  const formState: Record<string, string> = {};
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-    const queryParams = new URLSearchParams(formData as unknown as Record<string, string>).toString();
-    setParams(queryParams);
+    if (!formRef.current) return;
 
-    onCalculate();
+    const formData = new FormData(formRef.current);
+    for (const [key, value] of formData.entries()) {
+      formState[key] = value as string;
+    }
+    onCalculate(formState);
   };
 
   return (
     <section className="form">
       <div className="form__container">
-        <h1 className="form__title">Calculate your EV charging infrastructure costs</h1>
+        <h1 className="form__title">
+          Calculate your EV charging infrastructure costs
+        </h1>
         <p className="form__description">
-          Enter details about your EV charging infrastructure and find out the cost of charging with or without our solution.
+          Enter details about your EV charging infrastructure and find out the
+          cost of charging with or without our solution.
         </p>
-        <form 
+        <form
           className="form__content"
           action=""
           onSubmit={handleSubmit}
+          ref={formRef}
         >
           <div className="field">
             <label className="label">Battery size(kWh)</label>
             <div className="control">
-              <input 
+              <input
                 className="input"
                 type="number"
                 name="batterySize"
                 placeholder="Battery size"
-                required 
+                required
               />
             </div>
           </div>
@@ -45,14 +52,14 @@ export const Form: FC<Props> = ({ setParams, onCalculate }) => {
           <div className="field">
             <label className="label">Daily consumption(percentage)</label>
             <div className="control">
-              <input 
+              <input
                 className="input"
                 type="number"
                 name="dailyConsumption"
                 min={0}
                 max={100}
                 step={1}
-                placeholder="Daily consumption" 
+                placeholder="Daily consumption"
               />
             </div>
           </div>
@@ -60,12 +67,12 @@ export const Form: FC<Props> = ({ setParams, onCalculate }) => {
           <div className="field">
             <label className="label">Charging speed(kW)</label>
             <div className="control">
-              <input 
+              <input
                 className="input"
                 type="number"
                 name="chargingSpeed"
                 min={0}
-                placeholder="Charging speed" 
+                placeholder="Charging speed"
               />
             </div>
           </div>
@@ -73,24 +80,21 @@ export const Form: FC<Props> = ({ setParams, onCalculate }) => {
           <div className="field">
             <label className="label">Amount of assets</label>
             <div className="control">
-              <input 
+              <input
                 className="input"
                 type="number"
                 name="amoutOfAssets"
                 min={0}
                 step={1}
-                placeholder="Amount of assets" 
+                placeholder="Amount of assets"
               />
             </div>
           </div>
 
-
           <div className="field">
             <label className="label">Availability start</label>
             <div className="select">
-              <select 
-                  name="startTime"
-              >
+              <select name="startTime">
                 <option value="">Select time</option>
                 <option value="0">00:00</option>
                 <option value="1">01:00</option>
@@ -123,9 +127,7 @@ export const Form: FC<Props> = ({ setParams, onCalculate }) => {
           <div className="field">
             <label className="label">Availability end</label>
             <div className="select">
-              <select 
-                name="endTime"
-              >
+              <select name="endTime">
                 <option value="">Select time</option>
                 <option value="0">00:00</option>
                 <option value="1">01:00</option>
@@ -158,11 +160,10 @@ export const Form: FC<Props> = ({ setParams, onCalculate }) => {
           <div className="field">
             <div className="control">
               <label className="checkbox">
-                <input 
+                <input
                   name="weekendIncluded"
                   type="checkbox"
-
-                  style={{ marginRight: '8px' }}
+                  style={{ marginRight: "8px" }}
                 />
                 Including weekend
               </label>
@@ -171,20 +172,18 @@ export const Form: FC<Props> = ({ setParams, onCalculate }) => {
 
           <div className="field is-grouped">
             <div className="control">
-              <button 
-                className="button is-link"
-                type="submit"
-              >Calculate</button>
+              <button className="button is-link" type="submit">
+                Calculate
+              </button>
             </div>
             <div className="control">
-              <button 
-                className="button is-link is-light"
-                type="reset"
-              >Cancel</button>
+              <button className="button is-link is-light" type="reset">
+                Cancel
+              </button>
             </div>
           </div>
         </form>
       </div>
     </section>
-  )
-}
+  );
+};

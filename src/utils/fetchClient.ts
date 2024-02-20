@@ -1,20 +1,21 @@
-const BASE_URL = 'https://fever-sandbox.ew.r.appspot.com/calculate';
+const BASE_URL = "https://fever-sandbox.ew.r.appspot.com/calculate";
 
-const request = (url: string,) => {
-  const fullURL = BASE_URL + url;
-  
-  return fetch(fullURL)
-    .then((response) => {
-      if (!response.ok) {
-        // throw new Error();
+export const getValues = async (formState: Record<string, string>) => {
+  try {
+    const queryParams = new URLSearchParams();
 
-        return Promise.reject(
-          `${response.status}`
-        );
-      }
+    for (const key in formState) {
+      queryParams.append(key, formState[key]);
+    }
 
-      return response.json();
-    });
+    const response = await fetch(`${BASE_URL}?${queryParams.toString()}`);
+    if (!response.ok) {
+      const message = `An error has occured: ${response.status}`;
+      throw new Error(message);
+    }
+
+    return response.json();
+  } catch (err) {
+    console.log(err);
+  }
 };
-
-export const getValues = (params: string) => request(`?${params}`);

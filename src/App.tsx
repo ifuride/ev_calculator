@@ -1,25 +1,24 @@
-import { useState } from 'react'
-import { Header } from './components/Header';
-import { Form } from './components/Form';
-import { Result } from './components/Result';
-import { Footer } from './components/Footer';
-import { getValues } from './utils/fetchClient';
+import { useState } from "react";
+import { Header } from "./components/Header";
+import { Form } from "./components/Form";
+import { Result } from "./components/Result";
+import { Footer } from "./components/Footer";
+import { getValues } from "./utils/fetchClient";
 
 export const App = () => {
-  const [params, setParams] = useState('');
   const [smartValue, setSmartValue] = useState(0);
   const [feverValue, setFeverValue] = useState(0);
   // const [isLoading, setIsLoading] = useState(false);
 
-  const handleCalculateValues = async () => {
+  const handleCalculateValues = async (formState: Record<string, string>) => {
     // setIsLoading(true);
 
     try {
-      const valuesFromServer = await getValues(params)
-      
+      const valuesFromServer = await getValues(formState);
+
       setSmartValue(valuesFromServer.smart_charging);
-      setFeverValue(valuesFromServer.fever)
-    } catch(error) {
+      setFeverValue(valuesFromServer.fever);
+    } catch (error) {
       console.log(error);
     } finally {
       // setIsLoading(false);
@@ -30,16 +29,10 @@ export const App = () => {
     <div className="calculator">
       <Header />
       <main className="calculator__content">
-        <Form 
-          setParams={setParams}
-          onCalculate={handleCalculateValues}
-        />
-        <Result 
-          smartValue={smartValue}
-          feverValue={feverValue}
-        />
+        <Form onCalculate={handleCalculateValues} />
+        <Result smartValue={smartValue} feverValue={feverValue} />
       </main>
       <Footer />
     </div>
-  )
-}
+  );
+};

@@ -1,12 +1,14 @@
 import { FC } from 'react';
 import './Result.scss';
+import { Loader } from '../Loader';
 
 type Props = {
   smartValue: number,
   feverValue: number,
+  isLoading: boolean,
 };
 
-export const Result: FC<Props> = ({ smartValue, feverValue }) => {
+export const Result: FC<Props> = ({ smartValue, feverValue, isLoading }) => {
   return (
     <section className="result">
       <div className="result__container">
@@ -15,16 +17,18 @@ export const Result: FC<Props> = ({ smartValue, feverValue }) => {
           Here you can compare the cost of charging with and without our solution.
         </p>
         <div className="card result__view">
-          <div className="result__content">
-            <div className="result__smart-charging">
-              <h3 className="result__name">Smart charging</h3>
-              <h1 className="result__value">{smartValue} &euro;</h1>
+          {isLoading ? <Loader /> : (
+            <div className="result__content">
+              <div className="result__section">
+                <h3 className="result__name">Smart charging</h3>
+                <h1 className="result__value">{smartValue} &euro;</h1>
+              </div>
+              <div className="result__section">
+                <h3 className="result__name">Fever charging</h3>
+                <h1 className="result__value">{feverValue} &euro;</h1>
+              </div>
             </div>
-            <div className="result__smart-charging">
-              <h3 className="result__name">Fever charging</h3>
-              <h1 className="result__value">{feverValue} &euro;</h1>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </section>

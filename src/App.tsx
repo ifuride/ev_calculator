@@ -8,10 +8,10 @@ import { getValues } from "./utils/fetchClient";
 export const App = () => {
   const [smartValue, setSmartValue] = useState(0);
   const [feverValue, setFeverValue] = useState(0);
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCalculateValues = async (formState: Record<string, string>) => {
-    // setIsLoading(true);
+    setIsLoading(true);
 
     try {
       const valuesFromServer = await getValues(formState);
@@ -21,7 +21,7 @@ export const App = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -30,7 +30,7 @@ export const App = () => {
       <Header />
       <main className="calculator__content">
         <Form onCalculate={handleCalculateValues} />
-        <Result smartValue={smartValue} feverValue={feverValue} />
+        <Result smartValue={smartValue} feverValue={feverValue} isLoading={isLoading} />
       </main>
       <Footer />
     </div>

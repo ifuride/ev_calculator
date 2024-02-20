@@ -34,18 +34,47 @@
 
   &__content {
     display: flex;
+    flex-direction: column;
     justify-content: space-around;
+
+    @include onDesktop {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+    }
+
+    @include onTablet {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+    }
+  }
+
+  &__section {
+    &:first-child {
+      margin-bottom: 24px;
+
+      @include onDesktop {
+        margin-bottom: 0;
+      }
+  
+      @include onTablet {
+        margin-bottom: 0;
+      }
+    }
   }
 
   &__name {
     @extend %h3;
 
-    margin-bottom: 24px;
+    margin-bottom: 15px;
+    text-align: center;
+
   }
 
   &__value {
     @extend %h1;
 
-    margin-bottom: 24px;
+    text-align: center;
   }
 }

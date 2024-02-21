@@ -2,14 +2,9 @@
 @import "../../styles/utils/mixins";
 
 .form {
-  // &__container {
-  //   padding-top: 24px;
-
-
-  // }
-
   &__title {
     @extend %h1;
+    
     margin-bottom: 24px;
     text-align: center;
 

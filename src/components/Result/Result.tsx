@@ -6,11 +6,17 @@ type Props = {
   smartValue: number,
   feverValue: number,
   isLoading: boolean,
+  resultRef: React.RefObject<HTMLFormElement>,
 };
 
-export const Result: FC<Props> = ({ smartValue, feverValue, isLoading }) => {
+export const Result: FC<Props> = ({ 
+  smartValue, 
+  feverValue, 
+  isLoading, 
+  resultRef 
+}) => {
   return (
-    <section className="result">
+    <section className="result" ref={resultRef} >
       <div className="result__container">
         <h1 className="result__title">Cost comparison</h1>
         <p className="result__description">

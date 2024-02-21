@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Header } from "./components/Header";
 import { Form } from "./components/Form";
 import { Result } from "./components/Result";
@@ -9,7 +9,7 @@ export const App = () => {
   const [smartValue, setSmartValue] = useState(0);
   const [feverValue, setFeverValue] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-
+  const resultRef = useRef(null);
   const handleCalculateValues = async (formState: Record<string, string>) => {
     setIsLoading(true);
 
@@ -29,8 +29,16 @@ export const App = () => {
     <div className="calculator">
       <Header />
       <main className="calculator__content">
-        <Form onCalculate={handleCalculateValues} />
-        <Result smartValue={smartValue} feverValue={feverValue} isLoading={isLoading} />
+        <Form 
+          onCalculate={handleCalculateValues} 
+          resultRef={resultRef} 
+        />
+        <Result 
+          smartValue={smartValue} 
+          feverValue={feverValue} 
+          isLoading={isLoading} 
+          resultRef={resultRef} 
+        />
       </main>
       <Footer />
     </div>

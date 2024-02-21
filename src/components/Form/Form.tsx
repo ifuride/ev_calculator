@@ -2,22 +2,33 @@ import React, { FC, useRef } from "react";
 import "./Form.scss";
 
 type Props = {
-  onCalculate: (formState: Record<string, string>) => void;
+  onCalculate: (formState: Record<string, string>) => void,
+  resultRef: React.RefObject<HTMLFormElement>,
 };
 
-export const Form: FC<Props> = ({ onCalculate }) => {
+export const Form: FC<Props> = ({ 
+  onCalculate, resultRef 
+}) => {
   const formRef = useRef(null);
   const formState: Record<string, string> = {};
+  const executeScroll = () => {
+    if (!resultRef.current) return;
+
+    resultRef.current.scrollIntoView({behavior: 'smooth'});
+  };
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!formRef.current) return;
 
     const formData = new FormData(formRef.current);
+
     for (const [key, value] of formData.entries()) {
       formState[key] = value as string;
     }
+    
     onCalculate(formState);
+    executeScroll();
   };
 
   return (

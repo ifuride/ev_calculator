@@ -61,6 +61,15 @@ export const Form: FC<Props> = ({
     executeScroll();
   };
 
+  const handleReset = () => {
+    setHasBatterySizeError(false);
+    setHasDailyConsumptionError(false);
+    setHasChargingSpeedError(false);
+    setHasChargesAmountError(false);
+    setHasStartTimeError(false);
+    setHasEndTimeError(false);
+  }
+
   return (
     <section className="form">
       <div className="form__container">
@@ -75,6 +84,7 @@ export const Form: FC<Props> = ({
           className="form__content"
           action=""
           onSubmit={handleSubmit}
+          onReset={handleReset}
           ref={formRef}
         >
           <div className="field">

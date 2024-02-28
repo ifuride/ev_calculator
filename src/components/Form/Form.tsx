@@ -2,6 +2,7 @@ import React, { FC, useRef, useState } from 'react';
 import classNames from 'classnames';
 import './Form.scss';
 import { HourDropdown } from '../HourDropdown';
+import * as Yup from 'yup';
 
 type Props = {
   onCalculate: (formState: Record<string, string>) => void,
@@ -11,63 +12,93 @@ type Props = {
 export const Form: FC<Props> = ({ 
   onCalculate, resultRef 
 }) => {
-  const [hasBatterySizeError, setHasBatterySizeError] = useState(false);
-  const [hasDailyConsumptionError, setHasDailyConsumptionError] = useState(false);
-  const [hasChargingSpeedError, setHasChargingSpeedError] = useState(false);
-  const [hasChargesAmountError, setHasChargesAmountError] = useState(false);
-  const [hasStartTimeError, setHasStartTimeError] = useState(false);
-  const [hasEndTimeError, setHasEndTimeError] = useState(false);
-
-  const formRef = useRef(null);
-  const formState: Record<string, string> = {};
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const formRef = useRef<HTMLFormElement>(null);
   const executeScroll = () => {
     if (!resultRef.current) return;
 
     resultRef.current.scrollIntoView({behavior: 'smooth'});
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!formRef.current) return;
   
     const formData = new FormData(formRef.current);
+    const formState: Record<string, string> = {};
     
     for (const [key, value] of formData.entries()) {
       formState[key] = value as string;
     }
 
-    const {
-      batterySize,
-      dailyConsumption,
-      chargingSpeed,
-      amoutOfAssets,
-      startTime,
-      endTime,
-    } = formState;
-    
-    setHasBatterySizeError(!batterySize);
-    setHasDailyConsumptionError(!dailyConsumption);
-    setHasChargingSpeedError(!chargingSpeed);
-    setHasChargesAmountError(!amoutOfAssets);
-    setHasStartTimeError(!startTime);
-    setHasEndTimeError(!endTime);
+    try {
+      const schema = Yup.object().shape({
+        batterySize: Yup.number()
+          .transform((val, orig) => orig == '' ? undefined : val)
+          .required('Battery size is required')
+          .positive('Battery size must be a positive number')
+          .integer('Battery size must be an integer')
+          .typeError('Battery size must be a number'),
+        dailyConsumption: Yup.number()
+          .transform((val, orig) => orig == '' ? undefined : val)
+          .min(0, 'Daily consumption must be greater than or equal to 0')
+          .max(100, 'Daily consumption must be less than or equal to 100')
+          .integer('Daily consumption must be an integer')
+          .required('Daily consumtion is required')
+          .typeError('Daily consumption must be an integer value beetween 0-100'),
+        chargingSpeed: Yup.number()
+          .transform((val, orig) => orig == '' ? undefined : val)
+          .required('Charging speed is required')
+          .positive('Charging speed must be a positive number')
+          .typeError('Charging speed must be a number'),
+        amoutOfAssets: Yup.number()
+          .transform((val, orig) => orig == '' ? undefined : val)
+          .required('Amount of chargers is required')
+          .min(1, 'Amount of chargers must be greater than 0')
+          .integer('Amount of chargers must be an integer value')
+          .typeError('Amount of chargers must be an integer value'),
+        startTime: Yup.string()
+          .required('Availability start is required'),
+        endTime: Yup.string()
+          .required('Availability end is required'),
+      });
 
-    if (!batterySize || !dailyConsumption || !chargingSpeed || !amoutOfAssets || !startTime || !endTime) {
-      return;
+      await schema.validate(formState, {abortEarly: false});
+      console.log('form submitted');
+      onCalculate(formState);
+      executeScroll();
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const newErrors: Record<string, string> = {};
+
+        error.inner.forEach((err) => {
+          if (err.path) {
+            newErrors[err.path] = err.message;
+          }
+        });
+  
+        setErrors(newErrors);
+      } else {
+        console.error('Unknown error occurred:', error);
+      }
     }
+  };
 
-    onCalculate(formState);
-    executeScroll();
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name } = e.target;
+
+    setErrors({ ...errors, [name]: '' });
+  };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name } = e.target;
+
+    setErrors({ ...errors, [name]: '' });
   };
 
   const handleReset = () => {
-    setHasBatterySizeError(false);
-    setHasDailyConsumptionError(false);
-    setHasChargingSpeedError(false);
-    setHasChargesAmountError(false);
-    setHasStartTimeError(false);
-    setHasEndTimeError(false);
+    setErrors({});
   }
 
   return (
@@ -92,17 +123,16 @@ export const Form: FC<Props> = ({
             <div className="control">
               <input
                 className={classNames('input', {
-                  'is-danger': hasBatterySizeError,
+                  'is-danger': errors.batterySize,
                 })}
                 id="battery-size"
-                type="number"
                 name="batterySize"
                 placeholder="Battery size"
-                onChange={() => setHasBatterySizeError(false)}
+                onChange={handleInputChange}
               />
             </div>
-            {hasBatterySizeError && (
-              <p className="help is-danger">Battery size is required</p>
+            {errors.batterySize && (
+              <p className="help is-danger">{errors.batterySize}</p>
             )}
           </div>
 
@@ -116,20 +146,16 @@ export const Form: FC<Props> = ({
             <div className="control">
               <input
                 className={classNames('input', {
-                  'is-danger': hasDailyConsumptionError,
+                  'is-danger': errors.dailyConsumption,
                 })}
                 id="daily-consumption"
-                type="number"
                 name="dailyConsumption"
-                min={0}
-                max={100}
-                step={1}
                 placeholder="Daily consumption"
-                onChange={() => setHasDailyConsumptionError(false)}
+                onChange={handleInputChange}
               />
             </div>
-            {hasDailyConsumptionError && (
-              <p className="help is-danger">Daily consumption is required</p>
+            {errors.dailyConsumption && (
+              <p className="help is-danger">{errors.dailyConsumption}</p>
             )}
           </div>
 
@@ -144,17 +170,15 @@ export const Form: FC<Props> = ({
               <input
                 id="charging-speed"
                 className={classNames('input', {
-                  'is-danger': hasChargingSpeedError,
+                  'is-danger': errors.chargingSpeed,
                 })}
-                type="number"
                 name="chargingSpeed"
-                min={0}
                 placeholder="Charging speed"
-                onChange={() => setHasChargingSpeedError(false)}
+                onChange={handleInputChange}
               />
             </div>
-            {hasChargingSpeedError && (
-              <p className="help is-danger">Charging speed is required</p>
+            {errors.chargingSpeed && (
+              <p className="help is-danger">{errors.chargingSpeed}</p>
             )}
           </div>
 
@@ -168,33 +192,30 @@ export const Form: FC<Props> = ({
             <div className="control">
               <input
                 className={classNames('input', {
-                  'is-danger': hasChargesAmountError,
+                  'is-danger': errors.amoutOfAssets,
                 })}
                 id="amount-of-chargers"
-                type="number"
                 name="amoutOfAssets"
-                min={0}
-                step={1}
                 placeholder="Amount of chargers"
-                onChange={() => setHasChargesAmountError(false)}
+                onChange={handleInputChange}
               />
             </div>
-            {hasChargesAmountError && (
-              <p className="help is-danger">Amount of chargers is required</p>
+            {errors.amoutOfAssets && (
+              <p className="help is-danger">{errors.amoutOfAssets}</p>
             )}
           </div>
 
           <div className="field">
             <label className="label">Availability start</label>
             <div className={classNames('select', {
-            'is-danger': hasStartTimeError,
+            'is-danger': errors.startTime,
           })}>
               <HourDropdown 
                 name="startTime" 
-                setHasError={setHasStartTimeError}
+                setHasError={handleSelectChange}
               />
             </div>
-            {hasStartTimeError && (
+            {errors.startTime && (
               <p className="help is-danger">Availability start is required</p>
             )}
           </div>
@@ -202,14 +223,14 @@ export const Form: FC<Props> = ({
           <div className="field">
             <label className="label">Availability end</label>
             <div className={classNames('select', {
-            'is-danger': hasEndTimeError,
+            'is-danger': errors.endTime,
           })}>
               <HourDropdown 
                 name="endTime" 
-                setHasError={setHasEndTimeError}
+                setHasError={handleSelectChange}
               />
             </div>
-            {hasEndTimeError && (
+            {errors.endTime && (
               <p className="help is-danger">Availability end is required</p>
             )}
           </div>
